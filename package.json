@@ -1,0 +1,12 @@
+{
+  "name": "pickmyartist-root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "install:app": "npm --prefix pickmyartist install",
+    "dev": "npm --prefix pickmyartist run dev",
+    "build": "npm --prefix pickmyartist run build",
+    "preview": "npm --prefix pickmyartist run preview",
+    "lint": "npm --prefix pickmyartist run lint"
+  }
+}
