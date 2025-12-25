@@ -72,11 +72,6 @@ function ProfilePreviewCard({ profile, genresInput, languagesInput }) {
           {profile.display_name}
         </h3>
       )}
-      {profile.slug && (
-        <p className="mt-2 text-xs text-white/50">
-          pickmyartist.com/{profile.slug}
-        </p>
-      )}
       {hasLocation && (
         <p className="mt-1 text-sm text-white/60">
           {[profile.city, profile.country].filter(Boolean).join(", ")}
@@ -107,21 +102,12 @@ function ProfilePreviewCard({ profile, genresInput, languagesInput }) {
           {profile.bio.trim().length > 240 ? "…" : ""}
         </p>
       )}
-      {profile.slug ? (
+      {profile.slug && (
         <Link to={`/a/${profile.slug}`} className="mt-5 inline-flex">
           <Button variant="secondary" className="px-5 py-2">
             View public profile
           </Button>
         </Link>
-      ) : (
-        <div className="mt-5">
-          <Button variant="secondary" className="px-5 py-2" disabled>
-            View public profile
-          </Button>
-          <p className="mt-2 text-xs text-white/50">
-            Add a slug to enable your public link.
-          </p>
-        </div>
       )}
     </Card>
   );
@@ -375,7 +361,7 @@ export default function EditProfile() {
       slugify(payload.slug || payload.display_name || "") ||
       `artist-${authUser.id.slice(0, 8)}`;
 
-    if (!existing) {
+    if (!existing || !payload.slug) {
       payload.slug = generatedSlug;
     }
 
@@ -598,21 +584,6 @@ export default function EditProfile() {
                     onChange={updateField("display_name")}
                     className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20"
                   />
-                </div>
-                <div>
-                  <label htmlFor="slug" className="text-xs uppercase tracking-[0.25em] text-white/50">
-                    Slug
-                  </label>
-                  <input
-                    id="slug"
-                    type="text"
-                    value={profile.slug ?? ""}
-                    onChange={updateField("slug")}
-                    className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20"
-                  />
-                  <p className="mt-2 text-xs text-white/40">
-                    Your link: pickmyartist.com/{profile.slug || "your-name"}
-                  </p>
                 </div>
                 <div>
                   <label htmlFor="city" className="text-xs uppercase tracking-[0.25em] text-white/50">
