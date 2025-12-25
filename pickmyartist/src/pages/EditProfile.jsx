@@ -264,15 +264,6 @@ export default function EditProfile() {
   }, [formattedLanguages]);
 
   useEffect(() => {
-    if (!profile.slug && profile.display_name) {
-      setProfile((current) => ({
-        ...current,
-        slug: slugify(profile.display_name),
-      }));
-    }
-  }, [profile.display_name, profile.slug]);
-
-  useEffect(() => {
     if (saveStatus === "saved") {
       setSavedIndicator(true);
       const timer = setTimeout(() => {
