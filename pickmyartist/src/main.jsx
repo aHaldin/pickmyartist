@@ -1,3 +1,6 @@
+console.log("ENV URL:", import.meta.env.VITE_SUPABASE_URL);
+console.log("ENV KEY:", import.meta.env.VITE_SUPABASE_ANON_KEY?.slice(0, 20));
+
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
