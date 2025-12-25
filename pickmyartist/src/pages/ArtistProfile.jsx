@@ -15,6 +15,7 @@ export default function ArtistProfile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [enquiryStatus, setEnquiryStatus] = useState("idle");
+  const [enquiryError, setEnquiryError] = useState("");
   const [enquiryForm, setEnquiryForm] = useState({
     name: "",
     email: "",
@@ -96,38 +97,67 @@ export default function ArtistProfile() {
 
   const handleEnquiryChange = (field) => (event) => {
     setEnquiryStatus("idle");
+    setEnquiryError("");
     setEnquiryForm((current) => ({ ...current, [field]: event.target.value }));
   };
 
   const handleEnquirySubmit = async (event) => {
     event.preventDefault();
     setEnquiryStatus("sending");
+    setEnquiryError("");
 
     if (!supabase) {
+      setEnquiryError("Supabase is not configured.");
       setEnquiryStatus("save_failed");
       return;
     }
+
+    if (!artist?.id) {
+      setEnquiryError("Missing artist profile.");
+      setEnquiryStatus("save_failed");
+      return;
+    }
+
+    const name = enquiryForm.name.trim();
+    const email = enquiryForm.email.trim();
+    const message = enquiryForm.message.trim();
+    const eventDate = enquiryForm.eventDate.trim();
+    const eventLocation = enquiryForm.eventLocation.trim();
+    const budget = enquiryForm.budget.trim();
+
+    if (!name || !email || !message) {
+      setEnquiryError("Please complete all required fields.");
+      setEnquiryStatus("save_failed");
+      return;
+    }
+
+    const payload = {
+      artist_id: artist.id,
+      name,
+      email,
+      message,
+    };
+
+    if (eventDate) payload.event_date = eventDate;
+    if (eventLocation) payload.event_location = eventLocation;
+    if (budget) payload.budget = budget;
+
+    console.log("Enquiry insert payload keys", Object.keys(payload));
 
     if (!artist.email_public) {
+      setEnquiryError("This performer is not accepting enquiries yet.");
       setEnquiryStatus("save_failed");
       return;
     }
 
-    const { data: inserted, error: insertError } = await supabase
+    const { error: insertError } = await supabase
       .from("enquiries")
-      .insert({
-        artist_id: artist.id,
-        name: enquiryForm.name,
-        email: enquiryForm.email,
-        message: enquiryForm.message,
-        event_date: enquiryForm.eventDate || null,
-        event_location: enquiryForm.eventLocation || null,
-        budget: enquiryForm.budget || null,
-      })
-      .select("id")
-      .single();
+      .insert([payload]);
 
     if (insertError) {
+      console.error("Enquiry insert error", insertError);
+      console.log("Enquiry insert payload keys", Object.keys(payload));
+      setEnquiryError(insertError.message || "Insert failed.");
       setEnquiryStatus("save_failed");
       return;
     }
@@ -136,19 +166,9 @@ export default function ArtistProfile() {
     const ENABLE_EMAIL = false;
 
     // TODO: Enable Resend email notifications via Edge Function.
+    // TODO: Move insert + email to an Edge Function to return an enquiry id.
     if (ENABLE_EMAIL) {
-      const { error: emailError } = await supabase.functions.invoke(
-        "send-enquiry-email",
-        {
-          body: {
-            enquiryId: inserted?.id,
-          },
-        }
-      );
-
-      if (emailError) {
-        console.warn("Enquiry email failed", emailError);
-      }
+      console.warn("Email notifications are disabled in the client.");
     }
 
     setEnquiryStatus("sent");
@@ -337,7 +357,9 @@ export default function ArtistProfile() {
                 </div>
                 {enquiryStatus === "save_failed" && (
                   <p className="rounded-2xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-200">
-                    Something went wrong. Please try again.
+                    {import.meta.env.DEV && enquiryError
+                      ? enquiryError
+                      : "Something went wrong. Please try again."}
                   </p>
                 )}
                 {enquiryStatus === "sent" && (
