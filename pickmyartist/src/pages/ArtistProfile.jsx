@@ -381,15 +381,6 @@ export default function ArtistProfile() {
                 </Button>
               </form>
             </Card>
-            {artist.email_public ? (
-              <a href={`mailto:${artist.email_public}`}>
-                <Button className="w-full px-5 py-3">Contact</Button>
-              </a>
-            ) : (
-              <Button className="w-full px-5 py-3" variant="ghost" disabled>
-                Contact
-              </Button>
-            )}
           </div>
         </div>
       </Card>
