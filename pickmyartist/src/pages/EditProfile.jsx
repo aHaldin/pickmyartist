@@ -492,12 +492,10 @@ export default function EditProfile() {
       return;
     }
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("profiles")
       .update(updatePayload)
-      .eq("id", authUser.id)
-      .select()
-      .single();
+      .eq("id", authUser.id);
 
     if (error) {
       setUploadStatus((current) => ({
@@ -507,9 +505,10 @@ export default function EditProfile() {
       return;
     }
 
-    if (data) {
-      setProfile({ ...emptyProfile, ...data });
-    }
+    setProfile((current) => ({
+      ...current,
+      ...updatePayload,
+    }));
 
     setUploadStatus((current) => ({
       ...current,
