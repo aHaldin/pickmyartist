@@ -136,11 +136,10 @@ export default function ArtistProfile() {
       name,
       email,
       message,
+      event_date: eventDate || null,
+      event_location: eventLocation || null,
+      budget: budget || null,
     };
-
-    if (eventDate) payload.event_date = eventDate;
-    if (eventLocation) payload.event_location = eventLocation;
-    if (budget) payload.budget = budget;
 
     console.log("Enquiry insert payload keys", Object.keys(payload));
 
@@ -155,7 +154,13 @@ export default function ArtistProfile() {
       .insert([payload]);
 
     if (insertError) {
-      console.error("Enquiry insert error", insertError);
+      console.error("Enquiry insert error", {
+        message: insertError.message,
+        details: insertError.details,
+        status: insertError.status,
+        hint: insertError.hint,
+        code: insertError.code,
+      });
       console.log("Enquiry insert payload keys", Object.keys(payload));
       setEnquiryError(insertError.message || "Insert failed.");
       setEnquiryStatus("save_failed");
