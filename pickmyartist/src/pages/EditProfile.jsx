@@ -730,21 +730,33 @@ export default function EditProfile() {
                     Avatar image
                   </label>
                   <div className="mt-2 flex items-center gap-4">
-                    <div className="h-16 w-16 overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+                    <label
+                      htmlFor="avatar-upload"
+                      className="group relative flex h-16 w-16 cursor-pointer items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/5 text-[10px] uppercase tracking-[0.25em] text-white/50 transition hover:border-white/30"
+                    >
                       {profile.avatar_path ? (
                         <img
                           src={getPublicProfileUrl(profile.avatar_path)}
                           alt="Avatar preview"
-                          className="h-full w-full object-cover"
+                          className="h-full w-full object-cover transition group-hover:scale-105"
                         />
-                      ) : null}
-                    </div>
+                      ) : (
+                        <span>Upload</span>
+                      )}
+                    </label>
                     <input
+                      id="avatar-upload"
                       type="file"
                       accept="image/*"
                       onChange={handleUpload("avatar")}
-                      className="text-xs text-white/60"
+                      className="sr-only"
                     />
+                    <label
+                      htmlFor="avatar-upload"
+                      className="cursor-pointer text-xs text-white/60 transition hover:text-white"
+                    >
+                      Choose file
+                    </label>
                   </div>
                   {uploadStatus.avatar.uploading && (
                     <p className="mt-2 text-xs text-white/60">Uploading...</p>
@@ -760,21 +772,33 @@ export default function EditProfile() {
                     Banner image
                   </label>
                   <div className="mt-2 flex flex-col gap-3">
-                    <div className="h-24 w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+                    <label
+                      htmlFor="banner-upload"
+                      className="group relative flex h-24 w-full cursor-pointer items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/5 text-[10px] uppercase tracking-[0.25em] text-white/50 transition hover:border-white/30"
+                    >
                       {profile.banner_path ? (
                         <img
                           src={getPublicProfileUrl(profile.banner_path)}
                           alt="Banner preview"
-                          className="h-full w-full object-cover"
+                          className="h-full w-full object-cover transition group-hover:scale-105"
                         />
-                      ) : null}
-                    </div>
+                      ) : (
+                        <span>Upload banner</span>
+                      )}
+                    </label>
                     <input
+                      id="banner-upload"
                       type="file"
                       accept="image/*"
                       onChange={handleUpload("banner")}
-                      className="text-xs text-white/60"
+                      className="sr-only"
                     />
+                    <label
+                      htmlFor="banner-upload"
+                      className="cursor-pointer text-xs text-white/60 transition hover:text-white"
+                    >
+                      Choose file
+                    </label>
                   </div>
                   <p className="mt-2 text-xs text-white/40">
                     Recommended size: 1600 x 600. We’ll auto-crop to fit.
