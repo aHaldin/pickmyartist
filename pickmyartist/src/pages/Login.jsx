@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient.js";
+import useAuth from "../hooks/useAuth.js";
 import SEO from "../components/SEO.jsx";
 
 const fetchProfileWithRetry = async (userId) => {
@@ -23,9 +24,16 @@ const fetchProfileWithRetry = async (userId) => {
 
 export default function Login() {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState({ loading: false, error: "" });
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [loading, navigate, user]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -39,7 +47,7 @@ export default function Login() {
       return;
     }
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -54,7 +62,7 @@ export default function Login() {
         await fetchProfileWithRetry(data.user.id);
       }
       setStatus({ loading: false, error: "" });
-      navigate("/edit");
+      navigate("/dashboard");
     } catch (fetchError) {
       setStatus({
         loading: false,
@@ -62,6 +70,10 @@ export default function Login() {
       });
     }
   };
+
+  if (!loading && user) {
+    return null;
+  }
 
   return (
     <>
