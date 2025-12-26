@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth.js";
 import { supabase, supabaseConfigured } from "../lib/supabaseClient.js";
 
 export default function RequireAdmin({ children }) {
-  const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [adminState, setAdminState] = useState({
     loading: true,
@@ -16,29 +15,16 @@ export default function RequireAdmin({ children }) {
     let mounted = true;
 
     const checkAdmin = async () => {
-      if (!supabase || !user?.id) {
+      if (!user?.email) {
         if (mounted) {
           setAdminState({ loading: false, isAdmin: false, checked: true });
         }
         return;
       }
 
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (!mounted) return;
-
-      if (error) {
-        setAdminState({ loading: false, isAdmin: false, checked: true });
-        return;
-      }
-
       setAdminState({
         loading: false,
-        isAdmin: data?.role === "admin",
+        isAdmin: user.email === "info@pickmy.live",
         checked: true,
       });
     };
@@ -48,18 +34,7 @@ export default function RequireAdmin({ children }) {
     return () => {
       mounted = false;
     };
-  }, [user?.id]);
-
-  useEffect(() => {
-    if (user && adminState.checked && !adminState.isAdmin) {
-      const timer = setTimeout(() => {
-        navigate("/", { replace: true });
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-
-    return undefined;
-  }, [adminState.checked, adminState.isAdmin, navigate, user]);
+  }, [user?.email]);
 
   if (!supabaseConfigured) {
     return (
@@ -103,8 +78,14 @@ export default function RequireAdmin({ children }) {
             This area is restricted to admins.
           </h2>
           <p className="mt-3 text-sm text-amber-100/80">
-            Redirecting you back to the homepage.
+            You do not have permission to view this page.
           </p>
+          <a
+            href="/dashboard"
+            className="mt-4 inline-flex text-sm text-amber-100 underline underline-offset-4"
+          >
+            Go to dashboard
+          </a>
         </div>
       </div>
     );
