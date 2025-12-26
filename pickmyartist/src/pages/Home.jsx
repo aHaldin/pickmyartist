@@ -327,8 +327,8 @@ function FinalCTA() {
         </Link>
         <p className="mt-6 text-sm text-white/60">
           Contact us at{" "}
-          <a className="text-white underline" href="mailto:hello@pickmy.live">
-            hello@pickmy.live
+          <a className="text-white underline" href="mailto:info@pickmy.live">
+            info@pickmy.live
           </a>
         </p>
       </div>
