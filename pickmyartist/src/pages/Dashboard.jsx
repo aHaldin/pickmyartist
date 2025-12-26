@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Card from "../components/Card.jsx";
 import Button from "../components/Button.jsx";
 import Pill from "../components/Pill.jsx";
+import SEO from "../components/SEO.jsx";
 import { supabase } from "../lib/supabaseClient.js";
 import useAuth from "../hooks/useAuth.js";
 import { getPublicProfileUrl } from "../lib/storage.js";
@@ -118,22 +119,37 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <section className="mx-auto w-full max-w-6xl px-6 py-12">
-        <Card className="px-6 py-12 text-center text-white/70">
-          Loading dashboard...
-        </Card>
-      </section>
+      <>
+        <SEO
+          title="PickMyArtist - Dashboard"
+          description="Review new enquiries, profile status, and booking activity."
+          canonical="/dashboard"
+        />
+        <section className="mx-auto w-full max-w-6xl px-6 py-12">
+          <Card className="px-6 py-12 text-center text-white/70">
+            Loading dashboard...
+          </Card>
+        </section>
+      </>
     );
   }
 
   return (
-    <section className="mx-auto w-full max-w-6xl px-6 py-12">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold text-white">Artist dashboard</h1>
-        <p className="text-sm text-white/60">
-          Monitor enquiries and keep your profile launch-ready.
-        </p>
-      </div>
+    <>
+      <SEO
+        title="PickMyArtist - Dashboard"
+        description="Review new enquiries, profile status, and booking activity."
+        canonical="/dashboard"
+      />
+      <section className="mx-auto w-full max-w-6xl px-6 py-12">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-3xl font-semibold text-white">
+            Artist dashboard
+          </h1>
+          <p className="text-sm text-white/60">
+            Monitor enquiries and keep your profile launch-ready.
+          </p>
+        </div>
 
       {error && (
         <Card className="mt-6 border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
@@ -338,6 +354,7 @@ export default function Dashboard() {
           </div>
         </Card>
       </div>
-    </section>
+      </section>
+    </>
   );
 }

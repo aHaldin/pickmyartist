@@ -5,6 +5,7 @@ import Button from "../components/Button.jsx";
 import Card from "../components/Card.jsx";
 import Pill from "../components/Pill.jsx";
 import { supabase } from "../lib/supabaseClient.js";
+import SEO from "../components/SEO.jsx";
 
 export default function Artists() {
   const [query, setQuery] = useState("");
@@ -115,7 +116,13 @@ export default function Artists() {
   };
 
   return (
-    <section className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-6 py-12">
+    <>
+      <SEO
+        title="PickMyArtist - Browse performers"
+        description="Browse live musicians, singers, DJs, and bands ready for weddings, events, and venues."
+        canonical="/artists"
+      />
+      <section className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-6 py-12">
       <div className="flex flex-col gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.3em] text-white/60">
@@ -254,6 +261,7 @@ export default function Artists() {
           <Button className="px-6 py-3">Create your free profile</Button>
         </Link>
       </Card>
-    </section>
+      </section>
+    </>
   );
 }

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient.js";
 import useAuth from "../hooks/useAuth.js";
 import Card from "../components/Card.jsx";
 import Button from "../components/Button.jsx";
 import Pill from "../components/Pill.jsx";
+import SEO from "../components/SEO.jsx";
 
 const statusMap = {
   new: "text-white/80 border-white/20",
@@ -13,6 +15,7 @@ const statusMap = {
 
 export default function DashboardEnquiries() {
   const { user } = useAuth();
+  const location = useLocation();
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -78,15 +81,22 @@ export default function DashboardEnquiries() {
       setSelected(data);
     }
   };
+  const canonicalPath = location.pathname || "/dashboard/enquiries";
 
   return (
-    <section className="mx-auto w-full max-w-6xl px-6 py-12">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold text-white">Enquiries inbox</h1>
-        <p className="text-sm text-white/60">
-          Manage incoming booking requests in one place.
-        </p>
-      </div>
+    <>
+      <SEO
+        title="PickMyArtist - Enquiries"
+        description="Manage incoming booking requests and respond to clients quickly."
+        canonical={canonicalPath}
+      />
+      <section className="mx-auto w-full max-w-6xl px-6 py-12">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-3xl font-semibold text-white">Enquiries inbox</h1>
+          <p className="text-sm text-white/60">
+            Manage incoming booking requests in one place.
+          </p>
+        </div>
 
       {loading ? (
         <Card className="mt-8 px-6 py-12 text-center text-white/70">
@@ -192,6 +202,7 @@ export default function DashboardEnquiries() {
           </Card>
         </div>
       )}
-    </section>
+      </section>
+    </>
   );
 }

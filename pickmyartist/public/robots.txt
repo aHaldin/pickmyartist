@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://pickmyartist.com/sitemap.xml

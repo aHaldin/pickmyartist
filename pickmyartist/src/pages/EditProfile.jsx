@@ -5,6 +5,7 @@ import useAuth from "../hooks/useAuth.js";
 import Button from "../components/Button.jsx";
 import Card from "../components/Card.jsx";
 import Pill from "../components/Pill.jsx";
+import SEO from "../components/SEO.jsx";
 import {
   BUCKET,
   formatBucketError,
@@ -534,27 +535,42 @@ export default function EditProfile() {
 
   if (!supabase) {
     return (
-      <section className="mx-auto w-full max-w-4xl flex-1 px-6 py-12">
-        <Card className="p-8 text-white/70">
-          Supabase is not configured. Connect your project to edit a profile.
-        </Card>
-      </section>
+      <>
+        <SEO
+          title="PickMyArtist - Edit profile"
+          description="Update your performer profile details, pricing, and media."
+          canonical="/edit"
+        />
+        <section className="mx-auto w-full max-w-4xl flex-1 px-6 py-12">
+          <Card className="p-8 text-white/70">
+            Supabase is not configured. Connect your project to edit a profile.
+          </Card>
+        </section>
+      </>
     );
   }
 
   return (
-    <section className="mx-auto w-full max-w-6xl px-6 py-10 pb-28">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold text-white">Edit your profile</h1>
-        <p className="text-sm text-white/60">
-          Keep your profile current so planners can book you faster.
-        </p>
-      </div>
-      {storageWarning && (
-        <Card className="border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
-          {storageWarning}
-        </Card>
-      )}
+    <>
+      <SEO
+        title="PickMyArtist - Edit profile"
+        description="Update your performer profile details, pricing, and media."
+        canonical="/edit"
+      />
+      <section className="mx-auto w-full max-w-6xl px-6 py-10 pb-28">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-3xl font-semibold text-white">
+            Edit your profile
+          </h1>
+          <p className="text-sm text-white/60">
+            Keep your profile current so planners can book you faster.
+          </p>
+        </div>
+        {storageWarning && (
+          <Card className="border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+            {storageWarning}
+          </Card>
+        )}
 
       {status.loading ? (
         <Card className="px-6 py-12 text-center text-white/70">
@@ -941,6 +957,7 @@ export default function EditProfile() {
           </div>
         </Card>
       </div>
-    </section>
+      </section>
+    </>
   );
 }

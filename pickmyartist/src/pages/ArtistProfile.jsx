@@ -5,6 +5,7 @@ import Button from "../components/Button.jsx";
 import Card from "../components/Card.jsx";
 import Pill from "../components/Pill.jsx";
 import { getPublicProfileUrl } from "../lib/storage.js";
+import SEO from "../components/SEO.jsx";
 
 const bannerFallbackClass =
   "bg-gradient-to-br from-[#8A2BE2]/35 via-white/10 to-[#FF2D95]/30";
@@ -66,32 +67,76 @@ export default function ArtistProfile() {
     };
   }, [slug]);
 
+  const canonicalPath = slug ? `/artist/${slug}` : "/artists";
+  const artistName = artist?.display_name?.trim();
+  const artistLocation = [artist?.city, artist?.country]
+    .filter(Boolean)
+    .join(", ");
+  const artistGenres = (artist?.genres || []).filter(Boolean).slice(0, 3);
+  const artistSummaryParts = [];
+  if (artistLocation) artistSummaryParts.push(artistLocation);
+  if (artistGenres.length > 0) artistSummaryParts.push(artistGenres.join(", "));
+
+  const seoTitle = artistName ? `PickMyArtist - ${artistName}` : undefined;
+  const seoDescription = artist?.bio?.trim()
+    ? artist.bio.trim().slice(0, 160)
+    : artistName
+      ? `${artistName}${
+          artistSummaryParts.length > 0
+            ? ` - ${artistSummaryParts.join(", ")}`
+            : ""
+        }. Book directly on PickMyArtist.`
+      : undefined;
+  const seoImage =
+    getPublicProfileUrl(artist?.banner_path) ||
+    getPublicProfileUrl(artist?.avatar_path) ||
+    undefined;
+
   if (loading) {
     return (
-      <section className="mx-auto w-full max-w-6xl flex-1 px-6 py-12 text-white/70">
-        Loading profile...
-      </section>
+      <>
+        <SEO
+          title={seoTitle}
+          description={seoDescription}
+          canonical={canonicalPath}
+          ogImage={seoImage}
+        />
+        <section className="mx-auto w-full max-w-6xl flex-1 px-6 py-12 text-white/70">
+          Loading profile...
+        </section>
+      </>
     );
   }
 
   if (error) {
     return (
-      <section className="mx-auto w-full max-w-6xl flex-1 px-6 py-12 text-white/70">
-        {error}
-      </section>
+      <>
+        <SEO
+          title={seoTitle}
+          description={seoDescription}
+          canonical={canonicalPath}
+          ogImage={seoImage}
+        />
+        <section className="mx-auto w-full max-w-6xl flex-1 px-6 py-12 text-white/70">
+          {error}
+        </section>
+      </>
     );
   }
 
   if (!artist) {
     return (
-      <section className="mx-auto w-full max-w-6xl flex-1 px-6 py-12">
-        <h1 className="text-3xl font-semibold text-white">
-          Performer not found
-        </h1>
-        <p className="mt-3 text-white/70">
-          We could not find a published profile for that performer.
-        </p>
-      </section>
+      <>
+        <SEO canonical={canonicalPath} />
+        <section className="mx-auto w-full max-w-6xl flex-1 px-6 py-12">
+          <h1 className="text-3xl font-semibold text-white">
+            Performer not found
+          </h1>
+          <p className="mt-3 text-white/70">
+            We could not find a published profile for that performer.
+          </p>
+        </section>
+      </>
     );
   }
 
@@ -192,49 +237,56 @@ export default function ArtistProfile() {
     .slice(0, 800);
 
   return (
-    <section className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-6 py-12">
-      <Card className="overflow-hidden">
-        <div className="relative h-64 sm:h-80">
-          {getPublicProfileUrl(artist.banner_path) ? (
-            <img
-              src={getPublicProfileUrl(artist.banner_path)}
-              alt={artist.display_name}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className={`h-full w-full ${bannerFallbackClass}`} />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/90 via-neutral-950/40 to-transparent" />
-          <div className="absolute bottom-6 left-6">
-            <p className="text-xs uppercase tracking-[0.3em] text-white/70">
-              {artist.city}
-              {artist.country ? `, ${artist.country}` : ""}
-            </p>
-            <h1 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">
-              {artist.display_name}
-            </h1>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {artist.genres?.map((genre) => (
-                <Pill key={genre} className="border-white/20 text-white/70">
-                  {genre}
-                </Pill>
-              ))}
-            </div>
-            <div className="mt-4 inline-flex rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-[0.3em] text-white/80">
-              {artist.price_from
-                ? `From £${artist.price_from.toLocaleString()}`
-                : "Pricing on request"}
-            </div>
-            <div className="mt-4">
-              <a href="#booking">
-                <Button className="px-5 py-2">Request availability</Button>
-              </a>
-              <p className="mt-2 text-xs uppercase tracking-[0.3em] text-white/60">
-                Direct enquiry · No commission · No middlemen
+    <>
+      <SEO
+        title={seoTitle}
+        description={seoDescription}
+        canonical={canonicalPath}
+        ogImage={seoImage}
+      />
+      <section className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-6 py-12">
+        <Card className="overflow-hidden">
+          <div className="relative h-64 sm:h-80">
+            {getPublicProfileUrl(artist.banner_path) ? (
+              <img
+                src={getPublicProfileUrl(artist.banner_path)}
+                alt={artist.display_name}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className={`h-full w-full ${bannerFallbackClass}`} />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/90 via-neutral-950/40 to-transparent" />
+            <div className="absolute bottom-6 left-6">
+              <p className="text-xs uppercase tracking-[0.3em] text-white/70">
+                {artist.city}
+                {artist.country ? `, ${artist.country}` : ""}
               </p>
+              <h1 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">
+                {artist.display_name}
+              </h1>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {artist.genres?.map((genre) => (
+                  <Pill key={genre} className="border-white/20 text-white/70">
+                    {genre}
+                  </Pill>
+                ))}
+              </div>
+              <div className="mt-4 inline-flex rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-[0.3em] text-white/80">
+                {artist.price_from
+                  ? `From £${artist.price_from.toLocaleString()}`
+                  : "Pricing on request"}
+              </div>
+              <div className="mt-4">
+                <a href="#booking">
+                  <Button className="px-5 py-2">Request availability</Button>
+                </a>
+                <p className="mt-2 text-xs uppercase tracking-[0.3em] text-white/60">
+                  Direct enquiry · No commission · No middlemen
+                </p>
+              </div>
             </div>
           </div>
-        </div>
         <div className="grid gap-8 px-6 py-8 lg:grid-cols-[2fr,1fr]">
           <div className="space-y-8">
             <section>
@@ -385,6 +437,7 @@ export default function ArtistProfile() {
         </div>
       </Card>
 
-    </section>
+      </section>
+    </>
   );
 }

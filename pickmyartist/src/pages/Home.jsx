@@ -7,6 +7,7 @@ import Button from "../components/Button.jsx";
 import Card from "../components/Card.jsx";
 import Pill from "../components/Pill.jsx";
 import SectionHeader from "../components/SectionHeader.jsx";
+import SEO from "../components/SEO.jsx";
 
 const steps = [
   {
@@ -345,52 +346,55 @@ export default function Home() {
     : "/artists";
 
   return (
-    <div className="flex flex-1 flex-col">
-      <section className="hero-noise mx-auto flex w-full max-w-7xl flex-1 flex-col gap-12 px-6 py-16 lg:flex-row lg:items-center">
-        <div className="flex-1">
-          <p className="text-xs uppercase tracking-[0.3em] text-white/60">
-            Book live performers in the UK
-          </p>
-          <h1 className="mt-4 max-w-xl text-4xl font-semibold leading-tight text-white sm:text-5xl sm:leading-tight">
-            Book live musicians with speed and confidence.
-          </h1>
-          <h1 className="mt-2 max-w-xl text-4xl font-semibold leading-tight sm:text-5xl sm:leading-tight">
-            <span className="bg-gradient-to-r from-[#8A2BE2] to-[#FF2D95] bg-clip-text text-transparent">
-              Hire singers, book bands, or secure a DJ in minutes.
-            </span>
-          </h1>
-          <p className="mt-4 text-base text-white/70">
-            PickMyArtist helps planners, venues, and couples book performers for
-            weddings, corporate events, and private parties without the
-            back-and-forth.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-4">
-            <Link to="/artists">
-              <Button className="px-6 py-3">Browse artists</Button>
-            </Link>
-            <Link to={ctaLink}>
-              <Button variant="secondary" className="px-6 py-3">
-                Are you a performer? Create a free profile
-              </Button>
-            </Link>
+    <>
+      <SEO canonical="/" />
+      <div className="flex flex-1 flex-col">
+        <section className="hero-noise mx-auto flex w-full max-w-7xl flex-1 flex-col gap-12 px-6 py-16 lg:flex-row lg:items-center">
+          <div className="flex-1">
+            <p className="text-xs uppercase tracking-[0.3em] text-white/60">
+              Book live performers in the UK
+            </p>
+            <h1 className="mt-4 max-w-xl text-4xl font-semibold leading-tight text-white sm:text-5xl sm:leading-tight">
+              Book live musicians with speed and confidence.
+            </h1>
+            <h1 className="mt-2 max-w-xl text-4xl font-semibold leading-tight sm:text-5xl sm:leading-tight">
+              <span className="bg-gradient-to-r from-[#8A2BE2] to-[#FF2D95] bg-clip-text text-transparent">
+                Hire singers, book bands, or secure a DJ in minutes.
+              </span>
+            </h1>
+            <p className="mt-4 text-base text-white/70">
+              PickMyArtist helps planners, venues, and couples book performers for
+              weddings, corporate events, and private parties without the
+              back-and-forth.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-4">
+              <Link to="/artists">
+                <Button className="px-6 py-3">Browse artists</Button>
+              </Link>
+              <Link to={ctaLink}>
+                <Button variant="secondary" className="px-6 py-3">
+                  Are you a performer? Create a free profile
+                </Button>
+              </Link>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.3em] text-white/50">
+              {["Direct enquiries", "No commission", "Verified performers"].map(
+                (item) => (
+                  <Pill key={item} className="text-white/50">
+                    {item}
+                  </Pill>
+                )
+              )}
+            </div>
           </div>
-          <div className="mt-4 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.3em] text-white/50">
-            {["Direct enquiries", "No commission", "Verified performers"].map(
-              (item) => (
-                <Pill key={item} className="text-white/50">
-                  {item}
-                </Pill>
-              )
-            )}
+          <div className="flex-1">
+            <HeroPreviewCard />
           </div>
-        </div>
-        <div className="flex-1">
-          <HeroPreviewCard />
-        </div>
-      </section>
+        </section>
 
-      <HowItWorks />
-      <FinalCTA />
-    </div>
+        <HowItWorks />
+        <FinalCTA />
+      </div>
+    </>
   );
 }
