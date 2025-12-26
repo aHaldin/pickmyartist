@@ -312,7 +312,7 @@ function FeaturedPerformers() {
   );
 }
 
-function FinalCTA({ ctaLink }) {
+function FinalCTA() {
   return (
     <section className="mx-auto w-full max-w-7xl px-6 pb-20">
       <div className="rounded-[32px] border border-white/10 bg-gradient-to-r from-[#8A2BE2]/20 via-white/5 to-[#FF2D95]/20 p-10 text-center backdrop-blur shadow-[0_0_40px_rgba(138,43,226,0.18)]">
@@ -322,12 +322,15 @@ function FinalCTA({ ctaLink }) {
         <p className="mt-4 text-sm text-white/70">
           Browse verified talent and send a direct enquiry in minutes.
         </p>
-        <Link
-          to={ctaLink}
-          className="mt-6 inline-flex"
-        >
+        <Link to="/artists" className="mt-6 inline-flex">
           <Button className="px-6 py-3">Browse artists</Button>
         </Link>
+        <p className="mt-6 text-sm text-white/60">
+          Contact us at{" "}
+          <a className="text-white underline" href="mailto:hello@pickmy.live">
+            hello@pickmy.live
+          </a>
+        </p>
       </div>
     </section>
   );
@@ -387,7 +390,7 @@ export default function Home() {
       </section>
 
       <HowItWorks />
-      <FinalCTA ctaLink={ctaLink} />
+      <FinalCTA />
     </div>
   );
 }
