@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import SiteNav from "./components/SiteNav.jsx";
 import GradientBG from "./components/GradientBG.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import RequireAdmin from "./components/RequireAdmin.jsx";
 import { supabaseConfigured } from "./lib/supabaseClient.js";
 import Home from "./pages/Home.jsx";
 import Artists from "./pages/Artists.jsx";
@@ -12,6 +13,7 @@ import Login from "./pages/Login.jsx";
 import EditProfile from "./pages/EditProfile.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import DashboardEnquiries from "./pages/DashboardEnquiries.jsx";
+import Admin from "./pages/Admin.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 export default function App() {
@@ -58,6 +60,14 @@ export default function App() {
               <ProtectedRoute>
                 <DashboardEnquiries />
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <RequireAdmin>
+                <Admin />
+              </RequireAdmin>
             }
           />
           <Route

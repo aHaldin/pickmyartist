@@ -1,13 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient.js";
+import { slugify } from "../lib/profile.js";
 import SEO from "../components/SEO.jsx";
-
-const slugify = (value) =>
-  value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "");
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -37,6 +32,7 @@ export default function Signup() {
 
     const { error: insertError } = await supabase.from("profiles").insert({
       id: userId,
+      email: emailAddress,
       display_name: displayName,
       slug,
       is_published: false,
