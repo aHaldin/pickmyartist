@@ -1,47 +1,31 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient.js";
-import { slugify } from "../lib/profile.js";
 import SEO from "../components/SEO.jsx";
+
+const fetchProfileWithRetry = async (userId) => {
+  const attemptFetch = () =>
+    supabase.from("profiles").select("*").eq("id", userId).single();
+
+  let { data, error } = await attemptFetch();
+
+  if (error?.code === "PGRST116") {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    ({ data, error } = await attemptFetch());
+  }
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
 
 export default function Signup() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState({ loading: false, error: "" });
-
-  const createProfile = async (userId, emailAddress) => {
-    const base = slugify(emailAddress.split("@")[0] || "performer");
-    let slug = base || `performer-${Math.floor(Math.random() * 10000)}`;
-
-    for (let i = 0; i < 5; i += 1) {
-      const { data } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("slug", slug)
-        .maybeSingle();
-
-      if (!data) {
-        break;
-      }
-
-      slug = `${base}-${Math.floor(1000 + Math.random() * 9000)}`;
-    }
-
-    const displayName = emailAddress.split("@")[0] || "Performer";
-
-    const { error: insertError } = await supabase.from("profiles").insert({
-      id: userId,
-      email: emailAddress,
-      display_name: displayName,
-      slug,
-      is_published: false,
-    });
-
-    if (insertError) {
-      throw insertError;
-    }
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -67,13 +51,13 @@ export default function Signup() {
 
     try {
       if (data?.user?.id) {
-        await createProfile(data.user.id, email);
+        await fetchProfileWithRetry(data.user.id);
       }
       navigate("/edit");
-    } catch (insertError) {
+    } catch (fetchError) {
       setStatus({
         loading: false,
-        error: insertError.message || "Unable to create profile.",
+        error: fetchError.message || "Unable to load profile.",
       });
       return;
     }

@@ -392,11 +392,21 @@ export default function EditProfile() {
       console.log("Save payload", payload);
     }
 
-    const query = existing
-      ? supabase.from("profiles").update(payload).eq("id", authUser.id)
-      : supabase.from("profiles").insert(payload);
+    if (!existing) {
+      setStatus((current) => ({
+        ...current,
+        error: "Profile not found. Please refresh and try again.",
+      }));
+      setIsSaving(false);
+      return;
+    }
 
-    const { data, error } = await query.select().single();
+    const { data, error } = await supabase
+      .from("profiles")
+      .update(payload)
+      .eq("id", authUser.id)
+      .select()
+      .single();
 
     if (import.meta.env.DEV) {
       console.log("Save result", { data, error });

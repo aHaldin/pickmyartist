@@ -3,6 +3,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabaseClient.js";
 import SEO from "../components/SEO.jsx";
 
+const fetchProfileWithRetry = async (userId) => {
+  const attemptFetch = () =>
+    supabase.from("profiles").select("*").eq("id", userId).single();
+
+  let { data, error } = await attemptFetch();
+
+  if (error?.code === "PGRST116") {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    ({ data, error } = await attemptFetch());
+  }
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -31,8 +49,18 @@ export default function Login() {
       return;
     }
 
-    setStatus({ loading: false, error: "" });
-    navigate("/edit");
+    try {
+      if (data?.user?.id) {
+        await fetchProfileWithRetry(data.user.id);
+      }
+      setStatus({ loading: false, error: "" });
+      navigate("/edit");
+    } catch (fetchError) {
+      setStatus({
+        loading: false,
+        error: fetchError.message || "Unable to load profile. Please retry.",
+      });
+    }
   };
 
   return (
