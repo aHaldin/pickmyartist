@@ -119,7 +119,7 @@ function ProfilePreviewCard({
         </p>
       )}
       {profile.slug && (
-        <Link to={`/a/${profile.slug}`} className="mt-5 inline-flex">
+        <Link to={`/artist/${profile.slug}`} className="mt-5 inline-flex">
           <Button variant="secondary" className="px-5 py-2">
             View public profile
           </Button>

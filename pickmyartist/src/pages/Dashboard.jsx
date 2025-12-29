@@ -189,14 +189,14 @@ export default function Dashboard() {
             Public profile
           </p>
           <p className="mt-3 text-sm text-white/70">
-            https://pickmyartist.com/a/{profile?.slug || ""}
+            https://pickmyartist.com/artist/{profile?.slug || ""}
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Button
               className="px-4 py-2"
               onClick={() =>
                 navigator.clipboard.writeText(
-                  `https://pickmyartist.com/a/${profile?.slug || ""}`
+                  `https://pickmyartist.com/artist/${profile?.slug || ""}`
                 )
               }
               disabled={!profile?.slug}
@@ -204,7 +204,7 @@ export default function Dashboard() {
               Copy link
             </Button>
             <a
-              href={`/a/${profile?.slug || ""}`}
+              href={`/artist/${profile?.slug || ""}`}
               target="_blank"
               rel="noreferrer"
             >
