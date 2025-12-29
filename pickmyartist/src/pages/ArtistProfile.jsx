@@ -10,6 +10,31 @@ import SEO from "../components/SEO.jsx";
 const bannerFallbackClass =
   "bg-gradient-to-br from-[#8A2BE2]/35 via-white/10 to-[#FF2D95]/30";
 
+const normalizeUrl = (value) => {
+  if (!value) return "";
+  if (/^https?:\/\//i.test(value)) return value;
+  return `https://${value}`;
+};
+
+const buildLink = (type, value) => {
+  if (!value) return null;
+
+  if (type === "instagram") {
+    const trimmed = value.trim();
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    const handle = trimmed.replace(/^@/, "");
+    return `https://instagram.com/${handle}`;
+  }
+
+  if (type === "youtube") {
+    const trimmed = value.trim();
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    return `https://youtube.com/${trimmed}`;
+  }
+
+  return normalizeUrl(value.trim());
+};
+
 export default function ArtistProfile() {
   const { slug } = useParams();
   const [artist, setArtist] = useState(null);
@@ -92,6 +117,18 @@ export default function ArtistProfile() {
     getPublicProfileUrl(artist?.banner_path) ||
     getPublicProfileUrl(artist?.avatar_path) ||
     undefined;
+
+  const links = [
+    artist?.website
+      ? { label: "Website", href: buildLink("website", artist.website) }
+      : null,
+    artist?.instagram
+      ? { label: "Instagram", href: buildLink("instagram", artist.instagram) }
+      : null,
+    artist?.youtube
+      ? { label: "YouTube", href: buildLink("youtube", artist.youtube) }
+      : null,
+  ].filter((link) => link?.href);
 
   if (loading) {
     return (
@@ -340,18 +377,26 @@ export default function ArtistProfile() {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-white">Media</h2>
-              <div className="mt-4 overflow-hidden rounded-3xl border border-white/10 bg-white/5">
-                {getPublicProfileUrl(artist.banner_path) ? (
-                  <img
-                    src={getPublicProfileUrl(artist.banner_path)}
-                    alt={`${artist.display_name} media`}
-                    className="h-64 w-full object-cover"
-                  />
-                ) : (
-                  <div className={`h-64 w-full ${bannerFallbackClass}`} />
-                )}
-              </div>
+              <h2 className="text-xl font-semibold text-white">Links</h2>
+              {links.length > 0 ? (
+                <div className="mt-4 flex flex-wrap gap-3">
+                  {links.map((link) => (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-xs uppercase tracking-[0.25em] text-white/70 transition hover:border-white/40 hover:text-white"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-3 text-sm text-white/60">
+                  No links added yet.
+                </p>
+              )}
             </section>
           </div>
 
