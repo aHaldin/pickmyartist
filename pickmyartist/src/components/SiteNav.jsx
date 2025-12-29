@@ -70,7 +70,7 @@ export default function SiteNav() {
                 Edit profile
               </NavLink>
               {profileSlug ? (
-                <NavLink to={`/a/${profileSlug}`} className={linkClass}>
+                <NavLink to={`/artist/${profileSlug}`} className={linkClass}>
                   View public profile
                 </NavLink>
               ) : (
@@ -141,7 +141,7 @@ export default function SiteNav() {
                   Edit profile
                 </NavLink>
                 {profileSlug ? (
-                  <NavLink to={`/a/${profileSlug}`} className={linkClass}>
+                  <NavLink to={`/artist/${profileSlug}`} className={linkClass}>
                     View public profile
                   </NavLink>
                 ) : (
