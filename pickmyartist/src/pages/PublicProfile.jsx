@@ -38,7 +38,8 @@ export default function PublicProfile() {
         .from("profiles")
         .select("*")
         .eq("slug", slug)
-        .single();
+        .eq("is_published", true)
+        .maybeSingle();
 
       if (!mounted) return;
 
@@ -179,6 +180,13 @@ export default function PublicProfile() {
               <div className="flex flex-wrap gap-2">
                 {profile.genres.map((genre) => (
                   <Pill key={genre}>{genre}</Pill>
+                ))}
+              </div>
+            )}
+            {profile.event_types?.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {profile.event_types.map((eventType) => (
+                  <Pill key={eventType}>{eventType}</Pill>
                 ))}
               </div>
             )}

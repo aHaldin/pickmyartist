@@ -73,6 +73,7 @@ export default function ArtistProfile() {
     .filter(Boolean)
     .join(", ");
   const artistGenres = (artist?.genres || []).filter(Boolean).slice(0, 3);
+  const artistEventTypes = (artist?.event_types || []).filter(Boolean);
   const artistSummaryParts = [];
   if (artistLocation) artistSummaryParts.push(artistLocation);
   if (artistGenres.length > 0) artistSummaryParts.push(artistGenres.join(", "));
@@ -271,6 +272,11 @@ export default function ArtistProfile() {
                     {genre}
                   </Pill>
                 ))}
+                {artist.event_types?.map((eventType) => (
+                  <Pill key={eventType} className="border-white/20 text-white/70">
+                    {eventType}
+                  </Pill>
+                ))}
               </div>
               <div className="mt-4 inline-flex rounded-full border border-white/20 px-4 py-2 text-xs uppercase tracking-[0.3em] text-white/80">
                 {artist.price_from
@@ -311,7 +317,9 @@ export default function ArtistProfile() {
                     Events suited for
                   </p>
                   <p className="mt-2 text-sm text-white/70">
-                    Ask about weddings, corporate, and private events.
+                    {artistEventTypes.length > 0
+                      ? artistEventTypes.join(", ")
+                      : "Ask about weddings, corporate, and private events."}
                   </p>
                 </Card>
                 <Card className="p-4">

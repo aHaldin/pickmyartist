@@ -9,6 +9,7 @@ create table if not exists public.profiles (
   city text,
   country text,
   genres text[] default '{}',
+  event_types text[] default '{}',
   price_from int,
   bio text,
   languages text[] default '{}',

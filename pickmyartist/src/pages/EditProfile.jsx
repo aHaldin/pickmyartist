@@ -19,6 +19,7 @@ const emptyProfile = {
   city: "",
   country: "",
   genres: [],
+  event_types: [],
   price_from: "",
   bio: "",
   languages: [],
@@ -27,8 +28,6 @@ const emptyProfile = {
   instagram: "",
   website: "",
   youtube: "",
-  cover_url: "",
-  avatar_url: "",
   avatar_path: "",
   banner_path: "",
   is_published: false,
@@ -50,9 +49,18 @@ function PreviewChip({ children }) {
   );
 }
 
-function ProfilePreviewCard({ profile, genresInput, languagesInput }) {
+function ProfilePreviewCard({
+  profile,
+  genresInput,
+  eventTypesInput,
+  languagesInput,
+}) {
   const hasLocation = profile.city || profile.country;
   const genres = genresInput
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const eventTypes = eventTypesInput
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
@@ -82,6 +90,13 @@ function ProfilePreviewCard({ profile, genresInput, languagesInput }) {
         <div className="mt-4 flex flex-wrap gap-2">
           {genres.map((genre) => (
             <PreviewChip key={genre}>{genre}</PreviewChip>
+          ))}
+        </div>
+      )}
+      {eventTypes.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {eventTypes.map((eventType) => (
+            <PreviewChip key={eventType}>{eventType}</PreviewChip>
           ))}
         </div>
       )}
@@ -118,6 +133,7 @@ export default function EditProfile() {
   const { user } = useAuth();
   const [profile, setProfile] = useState(emptyProfile);
   const [genresInput, setGenresInput] = useState("");
+  const [eventTypesInput, setEventTypesInput] = useState("");
   const [languagesInput, setLanguagesInput] = useState("");
   const [status, setStatus] = useState({
     loading: true,
@@ -144,6 +160,11 @@ export default function EditProfile() {
   const formattedLanguages = useMemo(
     () => profile.languages?.join(", ") ?? "",
     [profile.languages]
+  );
+
+  const formattedEventTypes = useMemo(
+    () => profile.event_types?.join(", ") ?? "",
+    [profile.event_types]
   );
 
   useEffect(() => {
@@ -198,6 +219,7 @@ export default function EditProfile() {
         });
         setInitialSlug("");
         setGenresInput("");
+        setEventTypesInput("");
         setLanguagesInput("");
       } else {
         setProfile({
@@ -213,14 +235,13 @@ export default function EditProfile() {
           website: data.website ?? "",
           youtube: data.youtube ?? "",
           phone: data.phone ?? "",
-          cover_url: data.cover_url ?? "",
-          avatar_url: data.avatar_url ?? "",
           avatar_path: data.avatar_path ?? "",
           banner_path: data.banner_path ?? "",
           price_from: data.price_from ?? "",
         });
         setInitialSlug(data.slug ?? "");
         setGenresInput(data.genres?.join(", ") ?? "");
+        setEventTypesInput(data.event_types?.join(", ") ?? "");
         setLanguagesInput(data.languages?.join(", ") ?? "");
       }
 
@@ -243,6 +264,12 @@ export default function EditProfile() {
       setGenresInput(formattedGenres);
     }
   }, [formattedGenres]);
+
+  useEffect(() => {
+    if (formattedEventTypes !== eventTypesInput) {
+      setEventTypesInput(formattedEventTypes);
+    }
+  }, [formattedEventTypes]);
 
   useEffect(() => {
     if (formattedLanguages !== languagesInput) {
@@ -320,6 +347,10 @@ export default function EditProfile() {
         .split(",")
         .map((item) => item.trim())
         .filter(Boolean),
+      event_types: eventTypesInput
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean),
       languages: languagesInput
         .split(",")
         .map((item) => item.trim())
@@ -330,8 +361,6 @@ export default function EditProfile() {
       instagram: (profile.instagram || "").trim(),
       website: (profile.website || "").trim(),
       youtube: (profile.youtube || "").trim(),
-      cover_url: (profile.cover_url || "").trim(),
-      avatar_url: (profile.avatar_url || "").trim(),
       avatar_path: profile.avatar_path || null,
       banner_path: profile.banner_path || null,
       is_published: Boolean(profile.is_published),
@@ -424,6 +453,7 @@ export default function EditProfile() {
     if (data) {
       setProfile({ ...emptyProfile, ...data });
       setGenresInput(data.genres?.join(", ") ?? "");
+      setEventTypesInput(data.event_types?.join(", ") ?? "");
       setLanguagesInput(data.languages?.join(", ") ?? "");
     }
 
@@ -636,7 +666,7 @@ export default function EditProfile() {
                 </div>
                 <div className="md:col-span-2">
                   <label htmlFor="email-public" className="text-xs uppercase tracking-[0.25em] text-white/50">
-                    Public email
+                    Email
                   </label>
                   <input
                     id="email-public"
@@ -665,6 +695,20 @@ export default function EditProfile() {
                     value={genresInput ?? ""}
                     onChange={(event) => setGenresInput(event.target.value)}
                     placeholder="Pop, Soul, Acoustic"
+                    className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20"
+                  />
+                  <p className="mt-2 text-xs text-white/40">Comma separated</p>
+                </div>
+                <div>
+                  <label htmlFor="event-types" className="text-xs uppercase tracking-[0.25em] text-white/50">
+                    Event types
+                  </label>
+                  <input
+                    id="event-types"
+                    type="text"
+                    value={eventTypesInput ?? ""}
+                    onChange={(event) => setEventTypesInput(event.target.value)}
+                    placeholder="Weddings, Corporate, Private"
                     className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20"
                   />
                   <p className="mt-2 text-xs text-white/40">Comma separated</p>
@@ -886,30 +930,6 @@ export default function EditProfile() {
                     className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20"
                   />
                 </div>
-                <div>
-                  <label htmlFor="cover-url" className="text-xs uppercase tracking-[0.25em] text-white/50">
-                    Cover image URL
-                  </label>
-                  <input
-                    id="cover-url"
-                    type="text"
-                    value={profile.cover_url ?? ""}
-                    onChange={updateField("cover_url")}
-                    className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="avatar-url" className="text-xs uppercase tracking-[0.25em] text-white/50">
-                    Avatar image URL
-                  </label>
-                  <input
-                    id="avatar-url"
-                    type="text"
-                    value={profile.avatar_url ?? ""}
-                    onChange={updateField("avatar_url")}
-                    className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/20"
-                  />
-                </div>
               </div>
             </Card>
 
@@ -939,6 +959,7 @@ export default function EditProfile() {
             <ProfilePreviewCard
               profile={profile}
               genresInput={genresInput}
+              eventTypesInput={eventTypesInput}
               languagesInput={languagesInput}
             />
           </div>
