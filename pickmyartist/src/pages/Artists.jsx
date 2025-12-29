@@ -6,8 +6,10 @@ import Card from "../components/Card.jsx";
 import Pill from "../components/Pill.jsx";
 import { supabase } from "../lib/supabaseClient.js";
 import SEO from "../components/SEO.jsx";
+import useAuth from "../hooks/useAuth.js";
 
 export default function Artists() {
+  const { user, loading: authLoading } = useAuth();
   const [query, setQuery] = useState("");
   const [activeGenres, setActiveGenres] = useState([]);
   const [sortOrder, setSortOrder] = useState("recommended");
@@ -16,6 +18,7 @@ export default function Artists() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (authLoading) return undefined;
     let mounted = true;
 
     const loadArtists = async () => {
@@ -31,13 +34,18 @@ export default function Artists() {
         return;
       }
 
-      const { data, error: fetchError } = await supabase
+      const baseQuery = supabase
         .from("profiles")
         .select(
           "id, display_name, slug, city, country, genres, price_from, bio, avatar_path, banner_path, is_published"
         )
-        .eq("is_published", true)
         .order("created_at", { ascending: false });
+
+      const queryWithScope = user?.id
+        ? baseQuery.or(`is_published.eq.true,id.eq.${user.id}`)
+        : baseQuery.eq("is_published", true);
+
+      const { data, error: fetchError } = await queryWithScope;
 
       if (mounted) {
         if (fetchError) {
@@ -55,7 +63,7 @@ export default function Artists() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [authLoading, user?.id]);
 
   const genres = useMemo(() => {
     const set = new Set();
