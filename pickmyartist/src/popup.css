@@ -1,0 +1,100 @@
+/* January promo popup styles. Remove this file and related JS after January. */
+:root {
+  --pma-popup-bg: #0b0b0f;
+  --pma-popup-surface: #14141d;
+  --pma-popup-border: rgba(255, 255, 255, 0.12);
+  --pma-popup-text: rgba(255, 255, 255, 0.85);
+  --pma-popup-muted: rgba(255, 255, 255, 0.6);
+  --pma-popup-gradient: linear-gradient(135deg, #8a2be2, #ff2d95);
+}
+
+.pma-popup-open {
+  overflow: hidden;
+}
+
+.pma-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 5, 10, 0.75);
+  padding: 24px;
+}
+
+.pma-popup-modal {
+  width: min(560px, 100%);
+  border-radius: 24px;
+  border: 1px solid var(--pma-popup-border);
+  background: var(--pma-popup-surface);
+  padding: 28px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  color: var(--pma-popup-text);
+}
+
+.pma-popup-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.pma-popup-body {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--pma-popup-muted);
+  white-space: pre-line;
+  margin: 0 0 20px;
+}
+
+.pma-popup-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--pma-popup-gradient);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  text-decoration: none;
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pma-popup-cta:hover,
+.pma-popup-cta:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(255, 45, 149, 0.35);
+}
+
+.pma-popup-secondary {
+  display: inline-flex;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--pma-popup-muted);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.3);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.pma-popup-secondary:hover,
+.pma-popup-secondary:focus {
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  .pma-popup-modal {
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  .pma-popup-title {
+    font-size: 20px;
+  }
+}
